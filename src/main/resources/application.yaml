@@ -1,0 +1,22 @@
+server:
+  port: 9000
+  servlet:
+    context-path: /api
+spring:
+  application:
+    name: guid-pro
+  profiles:
+    active: development
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:guid-pro}
+    username: root
+    password: great@PassW0RD
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        jdbc:
+          lob:
+            non_contextual_creation: true
+    hibernate:
+      ddl-auto: update
