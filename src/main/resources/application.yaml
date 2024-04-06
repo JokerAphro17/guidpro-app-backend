@@ -20,3 +20,13 @@ spring:
             non_contextual_creation: true
     hibernate:
       ddl-auto: update
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri:   http://localhost:8082/realms/guidpro
+          jwk-set-uri:  http://localhost:8082/realms/guidpro/protocol/openid-connect/certs
+jwt:
+  auth:
+      converter:
+        resource-id: backend
