@@ -10,12 +10,14 @@ import jakarta.ws.rs.core.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.RealmResource;
+import org.keycloak.admin.client.resource.RolesResource;
 import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.authorization.client.AuthzClient;
 import org.keycloak.authorization.client.Configuration;
 import org.keycloak.representations.AccessTokenResponse;
 import org.keycloak.representations.idm.CredentialRepresentation;
+import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
@@ -77,6 +79,8 @@ public class KeycloakUserServiceImpl implements KeycloakUserService {
             TokenDto tokenDto = new TokenDto();
             tokenDto.setToken(accessTokenResponse.getToken());
             tokenDto.setRefreshToken(accessTokenResponse.getRefreshToken());
+            tokenDto.setExpiresIn(accessTokenResponse.getExpiresIn());
+            tokenDto.setTokenType(accessTokenResponse.getTokenType());
             return tokenDto;
         } catch (Exception e) {
             throw new LoginFailedException("Email ou mot de passe incorrect");
@@ -91,24 +95,13 @@ public class KeycloakUserServiceImpl implements KeycloakUserService {
 
         String userId = principal.getName();
         UserResource userResource = getUserResource(userId);
-        UserRepresentation userRepresentation = userResource.toRepresentation();
-        System.out.println("id = " + userRepresentation.getId());
-        System.out.println("username = " + userRepresentation.getUsername());
-        System.out.println("email = " + userRepresentation.getEmail());
-        System.out.println("firstName = " + userRepresentation.getFirstName());
-        System.out.println("lastName = " + userRepresentation.getLastName());
-        System.out.println("principalId = " + principal.getName());
-
         userResource.logout();
-
-
     }
 
 
     public String createUser(User user, String password) {
         UserRepresentation userRepresentation = modelMapper.map(user, UserRepresentation.class);
         userRepresentation.setEnabled(true);
-        userRepresentation.setRealmRoles(Arrays.asList(user.getClass().getSimpleName().toLowerCase()));
         userRepresentation.setEmailVerified(true);
         userRepresentation.setUsername(user.getEmail());
         CredentialRepresentation credentialRepresentation = new CredentialRepresentation();
@@ -167,6 +160,18 @@ public class KeycloakUserServiceImpl implements KeycloakUserService {
         return  getUsersResource().get(userId).toRepresentation();
     }
 
+    @Override
+    public void assignRole(String userId, String roleName) {
 
+        UserResource userResource = getUserResource(userId);
+        RolesResource rolesResource = getRolesResource();
+
+        RoleRepresentation representation = rolesResource.get(roleName).toRepresentation();
+        userResource.roles().realmLevel().add(Collections.singletonList(representation));
+    }
+
+    private RolesResource getRolesResource(){
+        return  keycloak.realm(realm).roles();
+    }
 }
 

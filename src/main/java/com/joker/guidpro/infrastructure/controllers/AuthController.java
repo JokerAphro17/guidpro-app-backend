@@ -9,6 +9,8 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+
 @RestController
 @CrossOrigin(origins = "*")
 @RequestMapping("/auth")
@@ -25,5 +27,11 @@ public class AuthController {
     public ResponseEntity<ResponseDTO> login(@Valid @RequestBody LoginCmd loginCmd) {
         LoginDto loginDto = authService.login(loginCmd.getUsername(), loginCmd.getPassword());
         return ResponseEntity.ok(new ResponseDTO("Login successful", loginDto, true));
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<ResponseDTO> logout(Principal principal) {
+        authService.logout(principal);
+        return ResponseEntity.ok(new ResponseDTO("Logout successful", null, true));
     }
 }

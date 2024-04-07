@@ -45,6 +45,7 @@ public class Intializer implements ApplicationRunner {
 
         String keycloakId = keycloakUserService.createUser(expert, password);
         expert.setKeycloakId(keycloakId);
+        keycloakUserService.assignRole(keycloakId, "EXPERT");
         userRepository.save(expert);
         // create Novice
         Novice novice = new Novice();
@@ -54,6 +55,7 @@ public class Intializer implements ApplicationRunner {
         novice.setPhone("01000000000");
         novice.setStatus(UserSatus.ACTIVE);
         novice.setKeycloakId(keycloakUserService.createUser(novice, password));
+        keycloakUserService.assignRole(novice.getKeycloakId(), "NOVICE");
         userRepository.save(novice);
 
         // create Admin
@@ -64,6 +66,7 @@ public class Intializer implements ApplicationRunner {
         admin.setPhone("01000000000");
         admin.setStatus(UserSatus.ACTIVE);
         admin.setKeycloakId(keycloakUserService.createUser(admin, password));
+        keycloakUserService.assignRole(admin.getKeycloakId(), "ADMIN");
         userRepository.save(admin);
 
     }

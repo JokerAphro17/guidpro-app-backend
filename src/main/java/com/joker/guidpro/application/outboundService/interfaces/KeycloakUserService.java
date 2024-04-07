@@ -14,6 +14,8 @@ public interface KeycloakUserService {
     void logout(Principal principal);
 
     void resetUserPassword(String userId, String password);
+
+    void assignRole(String userId, String roleName);
 }
 
 

@@ -10,7 +10,7 @@ import com.joker.guidpro.infrastructure.repositories.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.security.auth.login.FailedLoginException;
+import java.security.Principal;
 
 @Service
 @AllArgsConstructor
@@ -27,6 +27,11 @@ public class AuthService implements AuthServiceInter {
         }
        TokenDto tokenDto = keycloakUserService.login(username, password);
         return new LoginDto(user, tokenDto);
+    }
+
+    @Override
+    public void logout(Principal principal) {
+        keycloakUserService.logout(principal);
     }
 
 

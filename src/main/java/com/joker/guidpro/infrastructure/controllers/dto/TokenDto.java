@@ -9,4 +9,5 @@ public class TokenDto {
     private String token;
     private String refreshToken;
     private String tokenType;
+    private long expiresIn;
 }
