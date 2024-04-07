@@ -108,6 +108,7 @@ public class KeycloakUserServiceImpl implements KeycloakUserService {
     public String createUser(User user, String password) {
         UserRepresentation userRepresentation = modelMapper.map(user, UserRepresentation.class);
         userRepresentation.setEnabled(true);
+        userRepresentation.setRealmRoles(Arrays.asList(user.getClass().getSimpleName().toLowerCase()));
         userRepresentation.setEmailVerified(true);
         userRepresentation.setUsername(user.getEmail());
         CredentialRepresentation credentialRepresentation = new CredentialRepresentation();
