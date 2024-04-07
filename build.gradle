@@ -26,6 +26,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	compileOnly 'org.projectlombok:lombok'
+	implementation(platform("org.keycloak.bom:keycloak-adapter-bom:23.0.1"))
 	runtimeOnly 'org.postgresql:postgresql'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -34,7 +35,23 @@ dependencies {
 	// apache commons
 	implementation 'org.apache.commons:commons-lang3:3.12.0'
 	// springdoc-openapi-starter-webmvc-ui
-	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.0'
+
+	implementation 'org.keycloak:keycloak-admin-client:22.0.4'
+	implementation("org.keycloak:keycloak-spring-boot-starter")
+
+
+	implementation 'org.modelmapper:modelmapper:3.1.1'
+
+
+// Annotations library by JetBrains
+
+
+// Starter for using Java Bean Validation with Spring Boot
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+
+
+
 }
 
 tasks.named('test') {

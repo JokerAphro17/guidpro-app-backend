@@ -1,5 +1,6 @@
 package com.joker.guidpro.domains.models.agregates;
 
+import com.joker.guidpro.domains.models.enums.UserSatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,17 +24,24 @@ public  abstract class User implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "uuid2")
     private UUID id;
 
+    @Column(nullable = false)
     private String lastName;
 
+    @Column(nullable = false)
     private String firstName;
 
+    @Column(unique = true)
     private String email;
 
-    private String password;
+    @Column(unique = true)
+    private String keycloakId;
+
+    private  String phone;
 
     private boolean isDeleted;
 
-
+    @Enumerated(EnumType.STRING)
+    private UserSatus status;
 
 
 }

@@ -51,7 +51,9 @@ public class WebSecurityConfig {
         return (web) -> {
             web.ignoring().requestMatchers(
                     HttpMethod.POST,
-                    "test/**"
+                    "test/**",
+                    "auth/signin",
+                     "auth/signup"
 
             );
 

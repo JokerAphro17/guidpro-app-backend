@@ -30,3 +30,10 @@ jwt:
   auth:
       converter:
         resource-id: backend
+keycloak:
+  realm: guidpro
+  adminClientId: backend
+  adminClientSecret: 4L9G1bvT4jI1TzGReZxkrXnfcfxxEIvl
+  client: backend
+  urls:
+    auth: http://localhost:8082
