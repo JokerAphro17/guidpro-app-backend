@@ -1,10 +1,12 @@
 package com.joker.guidpro.infrastructure.controllers;
 
 import com.joker.guidpro.application.commandService.impl.AuthService;
-import com.joker.guidpro.application.outboundService.impl.KeycloakUserServiceImpl;
-import com.joker.guidpro.domains.models.commandes.LoginCmd;
+import com.joker.guidpro.domains.models.agregates.User;
+import com.joker.guidpro.domains.models.commandes.auth.LoginCmd;
+import com.joker.guidpro.domains.models.commandes.auth.RegisterCmd;
 import com.joker.guidpro.infrastructure.controllers.dto.LoginDto;
 import com.joker.guidpro.infrastructure.controllers.dto.ResponseDTO;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,9 +31,22 @@ public class AuthController {
         return ResponseEntity.ok(new ResponseDTO("Login successful", loginDto, true));
     }
 
+    @PostMapping("/signup")
+    public ResponseEntity<ResponseDTO> register(@Valid @RequestBody RegisterCmd registerCmd) {
+        if(!registerCmd.isPasswordMatch()){
+            return ResponseEntity.badRequest().body(new ResponseDTO("Les mots de passe ne correspondent pas", null, false));
+        }
+       if(registerCmd.isRoleInValid()){
+           return ResponseEntity.badRequest().body(new ResponseDTO("Role invalide", null, false));
+       }
+        User user = authService.register(registerCmd);
+        return ResponseEntity.ok(new ResponseDTO("User created successfully", user, true));
+    }
+
     @PostMapping("/logout")
-    public ResponseEntity<ResponseDTO> logout(Principal principal) {
-        authService.logout(principal);
+    public ResponseEntity<ResponseDTO> logout(Principal principal, HttpServletRequest request) {
+            authService.logout(principal);
+            request.getSession().invalidate();
         return ResponseEntity.ok(new ResponseDTO("Logout successful", null, true));
     }
 }

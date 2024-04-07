@@ -1,4 +1,4 @@
-package com.joker.guidpro.domains.models.commandes;
+package com.joker.guidpro.domains.models.commandes.auth;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;

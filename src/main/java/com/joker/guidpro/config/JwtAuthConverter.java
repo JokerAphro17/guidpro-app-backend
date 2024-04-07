@@ -47,17 +47,9 @@ public class JwtAuthConverter implements Converter<Jwt, AbstractAuthenticationTo
         Collection<String> allRoles = new ArrayList<>();
         Collection<String> resourceRoles;
         Collection<String> realmRoles;
-        // get principal name user roles
 
 
-        System.out.println("------JWT Claims------");
-        for (Map.Entry<String, Object> entry : jwt.getClaims().entrySet()) {
-            System.out.println(entry.getKey() + ":" + entry.getValue());
-        }
-        System.out.println("------JWT Claims------");
 
-        // claims principal
-        System.out.println("the principal is: " + jwt.getClaim("azp"));
 
         if (resourceAccess != null && resourceAccess.get("account") != null) {
 
@@ -71,11 +63,9 @@ public class JwtAuthConverter implements Converter<Jwt, AbstractAuthenticationTo
         if (realmAccess != null && realmAccess.containsKey("roles")) {
             realmRoles = (Collection<String>) realmAccess.get("roles");
             allRoles.addAll(realmRoles);
-            System.out.println("the allRoles is: " + allRoles);
         }
         if (allRoles.isEmpty() || !Objects.equals(resourceId, jwt.getClaim("azp"))) {
-            System.out.println("the resource id is not equal to the jwt claim");
-            return Set.of();
+           return Set.of();
         }
 
         Set<SimpleGrantedAuthority> collection = allRoles.stream()
@@ -85,9 +75,6 @@ public class JwtAuthConverter implements Converter<Jwt, AbstractAuthenticationTo
         for (GrantedAuthority grantedAuthority : collection) {
             System.out.println(grantedAuthority.getAuthority());
         }
-
-        // print out the collection
-        System.out.println("the collection is: " + collection);
 
         return collection;
 
