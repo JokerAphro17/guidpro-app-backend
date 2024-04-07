@@ -57,7 +57,6 @@ public class Intializer implements ApplicationRunner {
         novice.setKeycloakId(keycloakUserService.createUser(novice, password));
         keycloakUserService.assignRole(novice.getKeycloakId(), "NOVICE");
         userRepository.save(novice);
-
         // create Admin
         Admin admin = new Admin();
         admin.setLastName("Souleymane");
