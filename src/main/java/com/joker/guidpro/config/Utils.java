@@ -1,5 +1,7 @@
 package com.joker.guidpro.config;
 
+import java.util.UUID;
+
 public class Utils {
 
     public static String generateRandomString(int length) {
@@ -11,4 +13,15 @@ public class Utils {
         }
         return builder.toString();
     }
+
+    public static boolean isValidUUID(String uuid) {
+        try {
+            UUID.fromString(uuid);
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
+    }
+
+
 }

@@ -1,6 +1,7 @@
 package com.joker.guidpro.infrastructure.controllers;
 
 import com.joker.guidpro.application.commandService.impl.UserService;
+import com.joker.guidpro.config.Utils;
 import com.joker.guidpro.domains.models.agregates.User;
 import com.joker.guidpro.domains.models.commandes.auth.UserCmd;
 import com.joker.guidpro.infrastructure.controllers.dto.ResponseDTO;
@@ -27,7 +28,15 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ResponseDTO> getUserById(@PathVariable String id) {
+        // verify if the id is a valid UUID
+        if(!Utils.isValidUUID(id)){
+            return ResponseEntity.badRequest().body(new ResponseDTO("User not found", null, false));
+        }
+
         User user = userService.getUserById(UUID.fromString(id));
+        if(user == null){
+            return ResponseEntity.badRequest().body(new ResponseDTO("User not found", null, false));
+        }
         return ResponseEntity.ok(new ResponseDTO("User fetched successfully", user, true));
     }
 
