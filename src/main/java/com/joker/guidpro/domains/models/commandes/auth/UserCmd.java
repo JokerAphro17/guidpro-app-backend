@@ -1,21 +1,20 @@
-package com.joker.guidpro.domains.models.agregates;
+package com.joker.guidpro.domains.models.commandes.auth;
 
-
-import com.joker.guidpro.domains.models.entities.Domain;
-import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
-@Entity
-@DiscriminatorValue("EXPERT")
 @Data
-@EnableJpaAuditing
-@EntityListeners(AuditingEntityListener.class)
-public class Expert extends User {
-
-    @OneToOne
-    private Domain domain;
+public class UserCmd {
+    @NotEmpty(message = "Le nom est obligatoire")
+    private String lastName;
+    @NotEmpty(message = "Le prénom est obligatoire")
+    private String firstName;
+    @NotEmpty(message = "L'email est obligatoire")
+    private String email;
+    @NotEmpty(message = "Le mot de passe est obligatoire")
+    private String phone;
+    @NotEmpty(message = "Le role est obligatoire")
+    private String role;
 
     private String CompanyName;
 

@@ -35,6 +35,9 @@ public class WebSecurityConfig {
                                 HttpMethod.GET,
                                 "/admins"
                         ).hasRole(NOVICE)
+                        .requestMatchers(
+                                "/users"
+                        ).hasRole(ADMIN)
                         .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2
