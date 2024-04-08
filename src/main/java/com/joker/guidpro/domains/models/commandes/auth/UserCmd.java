@@ -1,5 +1,6 @@
 package com.joker.guidpro.domains.models.commandes.auth;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 
@@ -10,8 +11,8 @@ public class UserCmd {
     @NotEmpty(message = "Le prénom est obligatoire")
     private String firstName;
     @NotEmpty(message = "L'email est obligatoire")
+    @Email(message = "L'email doit être valide")
     private String email;
-    @NotEmpty(message = "Le mot de passe est obligatoire")
     private String phone;
     @NotEmpty(message = "Le role est obligatoire")
     private String role;

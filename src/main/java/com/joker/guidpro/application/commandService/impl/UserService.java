@@ -1,6 +1,7 @@
 package com.joker.guidpro.application.commandService.impl;
 
 import com.joker.guidpro.application.commandService.interfaces.UserServiceInter;
+import com.joker.guidpro.application.exceptions.AlreadyExistsException;
 import com.joker.guidpro.application.outboundService.impl.KeycloakUserServiceImpl;
 import com.joker.guidpro.config.Utils;
 import com.joker.guidpro.domains.models.agregates.Admin;
@@ -55,6 +56,10 @@ public class UserService implements UserServiceInter {
     @Override
     public User createUser(UserCmd userCmd) {
         User user = null;
+        // check if the user is already registered
+        if (userRepository.findByEmail(userCmd.getEmail()) != null) {
+            throw new AlreadyExistsException("L'utilisateur existe déjà");
+        }
         String password = Utils.generateRandomString(8);
         switch (userCmd.getRole()) {
             case "EXPERT":
