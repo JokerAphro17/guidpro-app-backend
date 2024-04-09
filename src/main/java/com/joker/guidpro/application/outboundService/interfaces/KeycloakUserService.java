@@ -18,6 +18,8 @@ public interface KeycloakUserService {
 
     void resetUserPassword(String userId, String password);
 
+    void updateUserStatus(String userId, boolean status);
+
     void assignRole(String userId, String roleName);
 }
 

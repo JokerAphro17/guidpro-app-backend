@@ -2,6 +2,7 @@ package com.joker.guidpro.application.commandService.interfaces;
 
 import com.joker.guidpro.domains.models.agregates.User;
 import com.joker.guidpro.domains.models.commandes.users.UserCmd;
+import com.joker.guidpro.domains.models.enums.UserSatus;
 
 import java.util.Set;
 import java.util.UUID;
@@ -17,4 +18,5 @@ public interface UserServiceInter {
     User updateUser(UUID id, UserCmd userCmd);
 
 
+    void updateUserStatus(UUID id, UserSatus status);
 }

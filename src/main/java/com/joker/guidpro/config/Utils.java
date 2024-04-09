@@ -1,5 +1,7 @@
 package com.joker.guidpro.config;
 
+import com.joker.guidpro.domains.models.enums.UserSatus;
+
 import java.util.UUID;
 
 public class Utils {
@@ -20,6 +22,16 @@ public class Utils {
             return true;
         } catch (IllegalArgumentException e) {
             return false;
+        }
+    }
+
+    public static UserSatus getUserStatus(String status) {
+        if(status.equals("ACTIVE")){
+            return UserSatus.ACTIVE;
+        } else if(status.equals("INACTIVE")) {
+            return UserSatus.INACTIVE;
+        } else {
+            return null;
         }
     }
 

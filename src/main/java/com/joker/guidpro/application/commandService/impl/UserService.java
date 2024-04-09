@@ -9,6 +9,7 @@ import com.joker.guidpro.domains.models.agregates.Expert;
 import com.joker.guidpro.domains.models.agregates.Novice;
 import com.joker.guidpro.domains.models.agregates.User;
 import com.joker.guidpro.domains.models.commandes.users.UserCmd;
+import com.joker.guidpro.domains.models.enums.UserSatus;
 import com.joker.guidpro.infrastructure.repositories.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -64,12 +65,15 @@ public class UserService implements UserServiceInter {
         switch (userCmd.getRole()) {
             case "EXPERT":
                 user = modelMapper.map(userCmd, Expert.class);
+                user.setStatus(UserSatus.ACTIVE);
                 break;
             case "NOVICE":
                 user = modelMapper.map(userCmd, Novice.class);
+                user.setStatus(UserSatus.ACTIVE);
                 break;
             case "ADMIN":
                 user = modelMapper.map(userCmd, Admin.class);
+                user.setStatus(UserSatus.ACTIVE);
                 break;
         }
         if (user != null) {
@@ -98,5 +102,18 @@ public class UserService implements UserServiceInter {
         return null;
     }
 
+    @Override
+    public void updateUserStatus(UUID id, UserSatus status) {
+        User user = userRepository.findById(id).orElse(null);
+        if (user != null) {
+            user.setStatus(status);
+            if (status.equals(UserSatus.INACTIVE)) {
+                keycloakUserService.updateUserStatus(user.getKeycloakId(), false);
+            } else {
+                keycloakUserService.updateUserStatus(user.getKeycloakId(), true);
+            }
+            userRepository.save(user);
+        }
+    }
 
 }

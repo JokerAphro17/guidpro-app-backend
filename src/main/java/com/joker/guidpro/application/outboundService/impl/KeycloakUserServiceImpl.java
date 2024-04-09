@@ -135,7 +135,6 @@ public class KeycloakUserServiceImpl implements KeycloakUserService {
 
 
 
-
     @Override
     public void resetUserPassword(String userId, String password){
         UserResource userResource = getUserResource(userId);
@@ -151,6 +150,15 @@ public class KeycloakUserServiceImpl implements KeycloakUserService {
 
         getUsersResource().delete(userId);
     }
+
+    @Override
+    public void updateUserStatus(String userId, boolean status) {
+        UserResource userResource = getUserResource(userId);
+        UserRepresentation userRepresentation = userResource.toRepresentation();
+        userRepresentation.setEnabled(status);
+        userResource.update(userRepresentation);
+    }
+
 
 
     public UserResource getUserResource(String userId){

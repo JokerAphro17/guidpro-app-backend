@@ -9,6 +9,7 @@ import com.joker.guidpro.domains.models.agregates.Novice;
 import com.joker.guidpro.domains.models.agregates.User;
 import com.joker.guidpro.domains.models.commandes.auth.RegisterCmd;
 import com.joker.guidpro.domains.models.enums.UserRoles;
+import com.joker.guidpro.domains.models.enums.UserSatus;
 import com.joker.guidpro.infrastructure.controllers.dto.LoginDto;
 import com.joker.guidpro.infrastructure.controllers.dto.TokenDto;
 import com.joker.guidpro.infrastructure.repositories.UserRepository;
@@ -36,6 +37,9 @@ public class AuthService implements AuthServiceInter {
         if (user == null) {
             throw new LoginFailedException("Password or username is incorrect");
         }
+        if(user.getStatus().equals(UserSatus.INACTIVE)){
+            throw new UnauthorizedException("Votre compte est inactif, veuillez contacter l'administrateur");
+        }
        TokenDto tokenDto = keycloakUserService.login(username, password);
         return new LoginDto(user, tokenDto);
     }
@@ -54,6 +58,7 @@ public class AuthService implements AuthServiceInter {
         }
         if(Objects.equals(role, UserRoles.EXPERT.toString())){
             Expert expert = modelMapper.map(registerCmd, Expert.class);
+            expert.setStatus(UserSatus.ACTIVE);
             String keycloakId = keycloakUserService.createUser(expert, registerCmd.getPassword());
             keycloakUserService.assignRole(keycloakId, "EXPERT");
             expert.setKeycloakId(keycloakId);
@@ -61,6 +66,7 @@ public class AuthService implements AuthServiceInter {
         }
         if(Objects.equals(role, UserRoles.NOVICE.toString())){
             Novice novice = modelMapper.map(registerCmd, Novice.class);
+            novice.setStatus(UserSatus.ACTIVE);
             String keycloakId = keycloakUserService.createUser(novice, registerCmd.getPassword());
             keycloakUserService.assignRole(keycloakId, "NOVICE");
             novice.setKeycloakId(keycloakId);
