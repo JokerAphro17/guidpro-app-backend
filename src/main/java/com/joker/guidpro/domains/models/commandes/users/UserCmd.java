@@ -1,7 +1,10 @@
-package com.joker.guidpro.domains.models.commandes.auth;
+package com.joker.guidpro.domains.models.commandes.users;
 
+import com.joker.guidpro.domains.models.validations.OnCreate;
+import com.joker.guidpro.domains.models.validations.OnUpdate;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Null;
 import lombok.Data;
 
 @Data
@@ -10,11 +13,13 @@ public class UserCmd {
     private String lastName;
     @NotEmpty(message = "Le prénom est obligatoire")
     private String firstName;
-    @NotEmpty(message = "L'email est obligatoire")
-    @Email(message = "L'email doit être valide")
+    @NotEmpty(message = "L'email est obligatoire", groups = {OnCreate.class})
+    @Email(message = "L'email doit être valide", groups = {OnCreate.class})
+    @Null(message = "L'email ne peut pas être modifié", groups = {OnUpdate.class})
     private String email;
     private String phone;
     @NotEmpty(message = "Le role est obligatoire")
+    @Null(message = "Le role ne peut pas être modifié", groups = {OnUpdate.class})
     private String role;
 
     private String CompanyName;

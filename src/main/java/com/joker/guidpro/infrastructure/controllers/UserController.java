@@ -3,10 +3,13 @@ package com.joker.guidpro.infrastructure.controllers;
 import com.joker.guidpro.application.commandService.impl.UserService;
 import com.joker.guidpro.config.Utils;
 import com.joker.guidpro.domains.models.agregates.User;
-import com.joker.guidpro.domains.models.commandes.auth.UserCmd;
+import com.joker.guidpro.domains.models.commandes.users.UserCmd;
+import com.joker.guidpro.domains.models.validations.OnCreate;
+import com.joker.guidpro.domains.models.validations.OnUpdate;
 import com.joker.guidpro.infrastructure.controllers.dto.ResponseDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
@@ -41,13 +44,13 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseDTO> updateUser(@PathVariable String id, @RequestBody UserCmd userCmd) {
+    public ResponseEntity<ResponseDTO> updateUser(@PathVariable String id, @RequestBody @Validated(OnUpdate.class) UserCmd userCmd) {
         User updatedUser = userService.updateUser(UUID.fromString(id), userCmd);
         return ResponseEntity.ok(new ResponseDTO("User updated successfully", updatedUser, true));
     }
 
     @PostMapping
-    public ResponseEntity<ResponseDTO> createUser(@RequestBody UserCmd userCmd) {
+    public ResponseEntity<ResponseDTO> createUser(@RequestBody @Validated(OnCreate.class) UserCmd userCmd) {
         User user = userService.createUser(userCmd);
         return ResponseEntity.ok(new ResponseDTO("User created successfully", user, true));
     }

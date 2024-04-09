@@ -8,7 +8,7 @@ import com.joker.guidpro.domains.models.agregates.Admin;
 import com.joker.guidpro.domains.models.agregates.Expert;
 import com.joker.guidpro.domains.models.agregates.Novice;
 import com.joker.guidpro.domains.models.agregates.User;
-import com.joker.guidpro.domains.models.commandes.auth.UserCmd;
+import com.joker.guidpro.domains.models.commandes.users.UserCmd;
 import com.joker.guidpro.infrastructure.repositories.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -86,7 +86,7 @@ public class UserService implements UserServiceInter {
     public User updateUser(UUID id, UserCmd userCmd) {
         User user = userRepository.findById(id).orElse(null);
         if (user != null) {
-            // verify the mail
+            modelMapper.map(userCmd, user);
             return userRepository.save(user);
         }
         return null;
