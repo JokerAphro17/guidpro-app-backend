@@ -15,7 +15,6 @@ public class UserCmd {
     private String firstName;
     @NotEmpty(message = "L'email est obligatoire", groups = {OnCreate.class})
     @Email(message = "L'email doit être valide", groups = {OnCreate.class})
-    @Null(message = "L'email ne peut pas être modifié", groups = {OnUpdate.class})
     private String email;
     private String phone;
     @NotEmpty(message = "Le role est obligatoire")

@@ -126,6 +126,13 @@ public class KeycloakUserServiceImpl implements KeycloakUserService {
 
     }
 
+    @Override
+    public void updateUser(User user) {
+        UserResource userResource = getUserResource(user.getKeycloakId());
+        UserRepresentation userRepresentation = modelMapper.map(user, UserRepresentation.class);
+        userResource.update(userRepresentation);
+    }
+
 
 
 

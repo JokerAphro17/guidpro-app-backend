@@ -86,9 +86,17 @@ public class UserService implements UserServiceInter {
     public User updateUser(UUID id, UserCmd userCmd) {
         User user = userRepository.findById(id).orElse(null);
         if (user != null) {
+            // verify if the mail is already used
+            User user1 = userRepository.findByEmail(userCmd.getEmail());
+            if (user1 != null && !user1.getId().equals(id)) {
+                throw new AlreadyExistsException("L'utilisateur existe déjà");
+            }
             modelMapper.map(userCmd, user);
+            keycloakUserService.updateUser(user);
             return userRepository.save(user);
         }
         return null;
     }
+
+
 }

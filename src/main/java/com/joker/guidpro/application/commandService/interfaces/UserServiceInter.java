@@ -15,4 +15,6 @@ public interface UserServiceInter {
     User createUser(UserCmd userCmd);
 
     User updateUser(UUID id, UserCmd userCmd);
+
+
 }
