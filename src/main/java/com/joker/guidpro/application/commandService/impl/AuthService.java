@@ -8,13 +8,13 @@ import com.joker.guidpro.domains.models.agregates.Expert;
 import com.joker.guidpro.domains.models.agregates.Novice;
 import com.joker.guidpro.domains.models.agregates.User;
 import com.joker.guidpro.domains.models.commandes.auth.RegisterCmd;
+import com.joker.guidpro.domains.models.commandes.users.UserCmd;
 import com.joker.guidpro.domains.models.enums.UserRoles;
 import com.joker.guidpro.domains.models.enums.UserSatus;
 import com.joker.guidpro.infrastructure.controllers.dto.LoginDto;
 import com.joker.guidpro.infrastructure.controllers.dto.TokenDto;
 import com.joker.guidpro.infrastructure.repositories.UserRepository;
 import jakarta.transaction.Transactional;
-import jakarta.ws.rs.core.Request;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -76,5 +76,20 @@ public class AuthService implements AuthServiceInter {
         return null;
     }
 
+    @Override
+    public User updateProfile(Principal principal, UserCmd userCmd) {
+        String userId = principal.getName();
+        User user = userRepo.findByKeycloakId(userId);
+        if(user == null){
+            throw new UnauthorizedException("User not found");
+        }
+        User user1 = userRepo.findByEmail(userCmd.getEmail());
+        if (user1 != null && !user1.getId().equals(user.getId())) {
+            throw new UnauthorizedException("Un utilisateur avec cet email existe déjà");
+        }
+        modelMapper.map(userCmd, user);
+        keycloakUserService.updateUser(user);
+        return userRepo.save(user);
+    }
 
 }

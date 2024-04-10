@@ -4,11 +4,14 @@ import com.joker.guidpro.application.commandService.impl.AuthService;
 import com.joker.guidpro.domains.models.agregates.User;
 import com.joker.guidpro.domains.models.commandes.auth.LoginCmd;
 import com.joker.guidpro.domains.models.commandes.auth.RegisterCmd;
+import com.joker.guidpro.domains.models.commandes.users.UserCmd;
+import com.joker.guidpro.domains.models.validations.OnUpdate;
 import com.joker.guidpro.infrastructure.controllers.dto.LoginDto;
 import com.joker.guidpro.infrastructure.controllers.dto.ResponseDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -48,5 +51,12 @@ public class AuthController {
             authService.logout(principal);
             request.getSession().invalidate();
         return ResponseEntity.ok(new ResponseDTO("Logout successful", null, true));
+    }
+
+    // update profile
+    @PutMapping("/profile")
+    public ResponseEntity<ResponseDTO> updateProfile(Principal principal, @Validated(OnUpdate.class) @RequestBody UserCmd userCmd) {
+        User updatedUser = authService.updateProfile(principal, userCmd);
+        return ResponseEntity.ok(new ResponseDTO("Profile updated successfully", updatedUser, true));
     }
 }

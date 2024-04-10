@@ -16,6 +16,8 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     List<User> findAll();
 
+    User findByKeycloakId(String keycloakId);
+
     @Query("SELECT e FROM Expert e")
     List<Expert> findAllExperts();
 
