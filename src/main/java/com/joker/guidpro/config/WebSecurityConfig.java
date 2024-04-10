@@ -32,10 +32,6 @@ public class WebSecurityConfig {
         return httpSecurity
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                HttpMethod.GET,
-                                "/admins"
-                        ).hasRole(NOVICE)
-                        .requestMatchers(
                                 "/users"
                         ).hasRole(ADMIN)
                         .anyRequest().authenticated()

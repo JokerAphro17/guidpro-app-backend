@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 @Component
 public class JwtAuthConverter implements Converter<Jwt, AbstractAuthenticationToken> {
 
@@ -35,7 +34,6 @@ public class JwtAuthConverter implements Converter<Jwt, AbstractAuthenticationTo
 
     private String getPrincipalClaimName(Jwt jwt) {
         String claimName = JwtClaimNames.SUB;
-        System.out.println("the claim name is: " + jwt.getClaim(claimName));
         return jwt.getClaim(claimName);
     }
 
@@ -72,9 +70,9 @@ public class JwtAuthConverter implements Converter<Jwt, AbstractAuthenticationTo
                 .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
                 .collect(Collectors.toSet());
 
-        for (GrantedAuthority grantedAuthority : collection) {
-            System.out.println(grantedAuthority.getAuthority());
-        }
+//        for (GrantedAuthority grantedAuthority : collection) {
+//            System.out.println(grantedAuthority.getAuthority());
+//        }
 
         return collection;
 
