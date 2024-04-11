@@ -1,5 +1,6 @@
 package com.joker.guidpro.domains.models.agregates;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.joker.guidpro.domains.models.enums.UserSatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -42,6 +43,10 @@ public  abstract class User implements Serializable {
 
     private boolean isDeleted;
 
+    @Column(nullable = false)
+    private String role = this.getClass().getSimpleName().toUpperCase();
+
+    @JsonIgnore
     private String password;
 
     @Column(nullable = false)

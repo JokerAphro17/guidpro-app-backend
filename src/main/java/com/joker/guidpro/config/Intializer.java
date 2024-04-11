@@ -8,6 +8,7 @@ import com.joker.guidpro.domains.models.enums.UserSatus;
 import com.joker.guidpro.infrastructure.repositories.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -17,6 +18,7 @@ public class Intializer implements ApplicationRunner {
     private final KeycloakUserServiceImpl keycloakUserService;
     private final UserRepository userRepository;
     private final String password = "password";
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
     @Override
     public void run(org.springframework.boot.ApplicationArguments args) throws Exception {
 
@@ -29,6 +31,7 @@ public class Intializer implements ApplicationRunner {
         expert.setEmail("expert@guid-pro.com");
         expert.setPhone("01000000000");
         expert.setStatus(UserSatus.ACTIVE);
+
         expert.setCompanyName("Guid-Pro");
         expert.setCompanyAddress("Cairo, Egypt");
         expert.setCompanyPhone("01000000000");
@@ -43,9 +46,11 @@ public class Intializer implements ApplicationRunner {
         expert.setCompanyYoutube("www.youtube.com/guid-pro");
         expert.setCompanyWhatsapp("www.whatsapp.com/guid-pro");
 
+
         String keycloakId = keycloakUserService.createUser(expert, password);
         expert.setKeycloakId(keycloakId);
         keycloakUserService.assignRole(keycloakId, "EXPERT");
+        expert.setPassword(bCryptPasswordEncoder.encode(password));
         userRepository.save(expert);
         // create Novice
         Novice novice = new Novice();
@@ -56,6 +61,7 @@ public class Intializer implements ApplicationRunner {
         novice.setStatus(UserSatus.ACTIVE);
         novice.setKeycloakId(keycloakUserService.createUser(novice, password));
         keycloakUserService.assignRole(novice.getKeycloakId(), "NOVICE");
+        novice.setPassword(bCryptPasswordEncoder.encode(password));
         userRepository.save(novice);
         // create Admin
         Admin admin = new Admin();
@@ -66,6 +72,7 @@ public class Intializer implements ApplicationRunner {
         admin.setStatus(UserSatus.ACTIVE);
         admin.setKeycloakId(keycloakUserService.createUser(admin, password));
         keycloakUserService.assignRole(admin.getKeycloakId(), "ADMIN");
+        admin.setPassword(bCryptPasswordEncoder.encode(password));
         userRepository.save(admin);
 
     }

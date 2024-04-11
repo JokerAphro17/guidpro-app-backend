@@ -1,7 +1,9 @@
 package com.joker.guidpro.application.commandService.impl;
 
 import com.joker.guidpro.application.commandService.interfaces.AuthServiceInter;
+import com.joker.guidpro.application.exceptions.ConflictException;
 import com.joker.guidpro.application.exceptions.LoginFailedException;
+import com.joker.guidpro.application.exceptions.NotFoundException;
 import com.joker.guidpro.application.exceptions.UnauthorizedException;
 import com.joker.guidpro.application.outboundService.impl.KeycloakUserServiceImpl;
 import com.joker.guidpro.domains.models.agregates.Expert;
@@ -69,14 +71,14 @@ public class AuthService implements AuthServiceInter {
         }
     }
 
-    private <T extends User> T createUserAndAssignRole(RegisterCmd registerCmd, Class<T> userClass, String role) {
-        T user = modelMapper.map(registerCmd, userClass);
+    private  User createUserAndAssignRole(RegisterCmd registerCmd, Class<? extends User> userClass, String role) {
+        User user = modelMapper.map(registerCmd, userClass);
         user.setStatus(UserSatus.ACTIVE);
         String keycloakId = keycloakUserService.createUser(user, registerCmd.getPassword());
         keycloakUserService.assignRole(keycloakId, role);
         user.setPassword(bCryptPasswordEncoder.encode(registerCmd.getPassword()));
         user.setKeycloakId(keycloakId);
-        return userRepo.save(user);
+        return  userRepo.save(user);
     }
 
     @Override
@@ -100,13 +102,13 @@ public class AuthService implements AuthServiceInter {
         String userId = principal.getName();
         User user = userRepo.findByKeycloakId(userId);
         if(user == null){
-            throw new UnauthorizedException("User not found");
+            throw new NotFoundException("User not found");
         }
         if (!bCryptPasswordEncoder.matches(changePasswordCmd.getOldPassword(), user.getPassword())) {
-            throw new UnauthorizedException("Old password is incorrect");
+            throw new ConflictException("Old password is incorrect");
         }
         user.setPassword(bCryptPasswordEncoder.encode(changePasswordCmd.getNewPassword()));
-        keycloakUserService.updateUser(user);
+        keycloakUserService.resetUserPassword(userId, changePasswordCmd.getNewPassword());
         userRepo.save(user);
     }
 

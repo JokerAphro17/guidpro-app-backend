@@ -14,6 +14,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @EntityListeners(AuditingEntityListener.class)
 public class Expert extends User {
 
+
     @OneToOne
     private Domain domain;
 

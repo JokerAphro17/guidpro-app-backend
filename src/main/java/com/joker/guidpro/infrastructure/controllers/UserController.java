@@ -38,6 +38,7 @@ public class UserController {
         }
 
         User user = userService.getUserById(UUID.fromString(id));
+
         if(user == null){
             return ResponseEntity.badRequest().body(new ResponseDTO("User not found", null, false));
         }
