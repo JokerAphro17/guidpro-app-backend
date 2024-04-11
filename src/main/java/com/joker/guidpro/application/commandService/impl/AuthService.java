@@ -22,7 +22,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
-import java.util.Objects;
 
 @Service
 @AllArgsConstructor
@@ -94,6 +93,21 @@ public class AuthService implements AuthServiceInter {
         modelMapper.map(userCmd, user);
         keycloakUserService.updateUser(user);
         return userRepo.save(user);
+    }
+
+    @Override
+    public void changePassword(Principal principal, ChangePasswordCmd changePasswordCmd) {
+        String userId = principal.getName();
+        User user = userRepo.findByKeycloakId(userId);
+        if(user == null){
+            throw new UnauthorizedException("User not found");
+        }
+        if (!bCryptPasswordEncoder.matches(changePasswordCmd.getOldPassword(), user.getPassword())) {
+            throw new UnauthorizedException("Old password is incorrect");
+        }
+        user.setPassword(bCryptPasswordEncoder.encode(changePasswordCmd.getNewPassword()));
+        keycloakUserService.updateUser(user);
+        userRepo.save(user);
     }
 
 

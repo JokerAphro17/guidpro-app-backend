@@ -4,6 +4,7 @@ import com.joker.guidpro.application.commandService.impl.AuthService;
 import com.joker.guidpro.domains.models.agregates.User;
 import com.joker.guidpro.domains.models.commandes.auth.LoginCmd;
 import com.joker.guidpro.domains.models.commandes.auth.RegisterCmd;
+import com.joker.guidpro.domains.models.commandes.users.ChangePasswordCmd;
 import com.joker.guidpro.domains.models.commandes.users.UserCmd;
 import com.joker.guidpro.domains.models.validations.OnUpdate;
 import com.joker.guidpro.infrastructure.controllers.dto.LoginDto;
@@ -58,5 +59,15 @@ public class AuthController {
     public ResponseEntity<ResponseDTO> updateProfile(Principal principal, @Validated(OnUpdate.class) @RequestBody UserCmd userCmd) {
         User updatedUser = authService.updateProfile(principal, userCmd);
         return ResponseEntity.ok(new ResponseDTO("Profile updated successfully", updatedUser, true));
+    }
+
+    // change password
+    @PutMapping("/change-password")
+    public ResponseEntity<ResponseDTO> changePassword(Principal principal, @Valid @RequestBody ChangePasswordCmd changePasswordCmd) {
+        if(!changePasswordCmd.isPasswordMatch()){
+            return ResponseEntity.badRequest().body(new ResponseDTO("Les mots de passe ne correspondent pas", null, false));
+        }
+        authService.changePassword(principal, changePasswordCmd);
+        return ResponseEntity.ok(new ResponseDTO("Password changed successfully", null, true));
     }
 }

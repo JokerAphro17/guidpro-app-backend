@@ -19,4 +19,5 @@ public interface AuthServiceInter {
 
     User updateProfile(Principal principal, UserCmd userCmd);
 
+    void changePassword(Principal principal, ChangePasswordCmd changePasswordCmd);
 }
