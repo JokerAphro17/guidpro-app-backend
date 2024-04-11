@@ -91,31 +91,45 @@ public class UserService implements UserServiceInter {
     @Override
     public User updateUser(UUID id, UserCmd userCmd) {
         User user = userRepository.findById(id).orElse(null);
-        if (user != null) {
-            // verify if the mail is already used
-            User user1 = userRepository.findByEmail(userCmd.getEmail());
-            if (user1 != null && !user1.getId().equals(id)) {
-                throw new AlreadyExistsException("L'utilisateur existe déjà");
-            }
-            modelMapper.map(userCmd, user);
-            keycloakUserService.updateUser(user);
-            return userRepository.save(user);
+        if (user == null) {
+           throw new IllegalArgumentException("User not found");
         }
+        User user1 = userRepository.findByEmail(userCmd.getEmail());
+        if (user1 != null && !user1.getId().equals(id)) {
+            throw new AlreadyExistsException("L'utilisateur existe déjà");
+        }
+        modelMapper.map(userCmd, user);
+        keycloakUserService.updateUser(user);
+        return userRepository.save(user);
         return null;
     }
 
     @Override
     public void updateUserStatus(UUID id, UserSatus status) {
         User user = userRepository.findById(id).orElse(null);
-        if (user != null) {
-            user.setStatus(status);
-            if (status.equals(UserSatus.INACTIVE)) {
-                keycloakUserService.updateUserStatus(user.getKeycloakId(), false);
-            } else {
-                keycloakUserService.updateUserStatus(user.getKeycloakId(), true);
-            }
-            userRepository.save(user);
+        if (user == null) {
+            throw new IllegalArgumentException("User not found");
         }
+        user.setStatus(status);
+        if (status.equals(UserSatus.INACTIVE)) {
+            keycloakUserService.updateUserStatus(user.getKeycloakId(), false);
+        } else {
+            keycloakUserService.updateUserStatus(user.getKeycloakId(), true);
+        }
+        userRepository.save(user);
+    }
+
+    @Override
+    public void resetUserPassword(UUID id) {
+        User user = userRepository.findById(id).orElse(null);
+        if (user == null) {
+            throw new IllegalArgumentException("User not found");
+        }
+        String password = Utils.generateRandomString(8);
+        keycloakUserService.resetUserPassword(user.getKeycloakId(), password);
+        user.setPassword(bCryptPasswordEncoder.encode(password));
+        userRepository.save(user);
+
     }
 
 }

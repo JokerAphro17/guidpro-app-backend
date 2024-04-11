@@ -71,4 +71,13 @@ public class UserController {
         userService.updateUserStatus(UUID.fromString(id), UserSatus.valueOf(status));
         return ResponseEntity.ok(new ResponseDTO("User status updated successfully", null, true));
     }
+
+    @PatchMapping("/{id}/reset-password")
+    public ResponseEntity<ResponseDTO> resetUserPassword(@PathVariable String id) {
+        if(!Utils.isValidUUID(id)){
+            return ResponseEntity.badRequest().body(new ResponseDTO("User not found", null, false));
+        }
+        userService.resetUserPassword(UUID.fromString(id));
+        return ResponseEntity.ok(new ResponseDTO("Password reset successfully", null, true));
+    }
 }

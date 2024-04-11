@@ -48,7 +48,6 @@ public  abstract class User implements Serializable {
 
     @JsonIgnore
     private String password;
-
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private UserSatus status;

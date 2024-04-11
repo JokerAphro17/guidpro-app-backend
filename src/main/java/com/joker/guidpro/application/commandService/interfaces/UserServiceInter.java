@@ -19,4 +19,6 @@ public interface UserServiceInter {
 
 
     void updateUserStatus(UUID id, UserSatus status);
+
+    void resetUserPassword(UUID id);
 }
