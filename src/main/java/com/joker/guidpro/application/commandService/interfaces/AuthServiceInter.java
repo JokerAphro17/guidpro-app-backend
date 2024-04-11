@@ -2,6 +2,7 @@ package com.joker.guidpro.application.commandService.interfaces;
 
 import com.joker.guidpro.domains.models.agregates.User;
 import com.joker.guidpro.domains.models.commandes.auth.RegisterCmd;
+import com.joker.guidpro.domains.models.commandes.users.ChangePasswordCmd;
 import com.joker.guidpro.domains.models.commandes.users.UserCmd;
 import com.joker.guidpro.infrastructure.controllers.dto.LoginDto;
 
@@ -17,4 +18,5 @@ public interface AuthServiceInter {
 
 
     User updateProfile(Principal principal, UserCmd userCmd);
+
 }

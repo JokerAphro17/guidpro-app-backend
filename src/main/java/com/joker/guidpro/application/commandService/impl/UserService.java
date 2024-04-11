@@ -14,6 +14,7 @@ import com.joker.guidpro.infrastructure.repositories.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -30,6 +31,8 @@ public class UserService implements UserServiceInter {
 
     private final ModelMapper modelMapper;
     private final KeycloakUserServiceImpl keycloakUserService;
+
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
     @Override
     public Set<User> getAllUsers(String type) {
         switch (type) {
@@ -65,22 +68,21 @@ public class UserService implements UserServiceInter {
         switch (userCmd.getRole()) {
             case "EXPERT":
                 user = modelMapper.map(userCmd, Expert.class);
-                user.setStatus(UserSatus.ACTIVE);
                 break;
             case "NOVICE":
                 user = modelMapper.map(userCmd, Novice.class);
-                user.setStatus(UserSatus.ACTIVE);
                 break;
             case "ADMIN":
                 user = modelMapper.map(userCmd, Admin.class);
-                user.setStatus(UserSatus.ACTIVE);
                 break;
         }
         if (user != null) {
+            user.setPassword(bCryptPasswordEncoder.encode(password));
+            user.setStatus(UserSatus.ACTIVE);
             String keycloakId = keycloakUserService.createUser(user, password);
-            assert user != null;
             user.setKeycloakId(keycloakId);
             keycloakUserService.assignRole(keycloakId, userCmd.getRole());
+            // send the mail here
             return userRepository.save(user);
         }
         return null;

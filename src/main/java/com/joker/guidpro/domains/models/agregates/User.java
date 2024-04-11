@@ -42,6 +42,8 @@ public  abstract class User implements Serializable {
 
     private boolean isDeleted;
 
+    private String password;
+
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private UserSatus status;

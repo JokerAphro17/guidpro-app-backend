@@ -5,6 +5,7 @@ package com.joker.guidpro.application.outboundService.impl;
 import com.joker.guidpro.application.exceptions.LoginFailedException;
 import com.joker.guidpro.application.outboundService.interfaces.KeycloakUserService;
 import com.joker.guidpro.domains.models.agregates.User;
+import com.joker.guidpro.domains.models.commandes.users.ChangePasswordCmd;
 import com.joker.guidpro.infrastructure.controllers.dto.TokenDto;
 import jakarta.ws.rs.core.Response;
 import lombok.extern.slf4j.Slf4j;
@@ -158,6 +159,8 @@ public class KeycloakUserServiceImpl implements KeycloakUserService {
         userRepresentation.setEnabled(status);
         userResource.update(userRepresentation);
     }
+
+
 
 
 

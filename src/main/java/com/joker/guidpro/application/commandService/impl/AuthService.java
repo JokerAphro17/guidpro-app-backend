@@ -8,6 +8,7 @@ import com.joker.guidpro.domains.models.agregates.Expert;
 import com.joker.guidpro.domains.models.agregates.Novice;
 import com.joker.guidpro.domains.models.agregates.User;
 import com.joker.guidpro.domains.models.commandes.auth.RegisterCmd;
+import com.joker.guidpro.domains.models.commandes.users.ChangePasswordCmd;
 import com.joker.guidpro.domains.models.commandes.users.UserCmd;
 import com.joker.guidpro.domains.models.enums.UserRoles;
 import com.joker.guidpro.domains.models.enums.UserSatus;
@@ -17,6 +18,7 @@ import com.joker.guidpro.infrastructure.repositories.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
@@ -31,6 +33,7 @@ public class AuthService implements AuthServiceInter {
     private final KeycloakUserServiceImpl keycloakUserService;
     private final UserRepository userRepo;
     private final ModelMapper modelMapper;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
     @Override
     public LoginDto login(String username, String password) {
         User user = userRepo.findByEmail(username);
@@ -56,24 +59,25 @@ public class AuthService implements AuthServiceInter {
         if (user != null) {
             throw new UnauthorizedException("Un utilisateur avec cet email existe déjà");
         }
-        if(Objects.equals(role, UserRoles.EXPERT.toString())){
-            Expert expert = modelMapper.map(registerCmd, Expert.class);
-            expert.setStatus(UserSatus.ACTIVE);
-            String keycloakId = keycloakUserService.createUser(expert, registerCmd.getPassword());
-            keycloakUserService.assignRole(keycloakId, "EXPERT");
-            expert.setKeycloakId(keycloakId);
-            return userRepo.save(expert);
-        }
-        if(Objects.equals(role, UserRoles.NOVICE.toString())){
-            Novice novice = modelMapper.map(registerCmd, Novice.class);
-            novice.setStatus(UserSatus.ACTIVE);
-            String keycloakId = keycloakUserService.createUser(novice, registerCmd.getPassword());
-            keycloakUserService.assignRole(keycloakId, "NOVICE");
-            novice.setKeycloakId(keycloakId);
-            return userRepo.save(novice);
-        }
 
-        return null;
+        switch (UserRoles.valueOf(role)) {
+            case EXPERT:
+                return createUserAndAssignRole(registerCmd, Expert.class, "EXPERT");
+            case NOVICE:
+                return createUserAndAssignRole(registerCmd, Novice.class, "NOVICE");
+            default:
+                return null;
+        }
+    }
+
+    private <T extends User> T createUserAndAssignRole(RegisterCmd registerCmd, Class<T> userClass, String role) {
+        T user = modelMapper.map(registerCmd, userClass);
+        user.setStatus(UserSatus.ACTIVE);
+        String keycloakId = keycloakUserService.createUser(user, registerCmd.getPassword());
+        keycloakUserService.assignRole(keycloakId, role);
+        user.setPassword(bCryptPasswordEncoder.encode(registerCmd.getPassword()));
+        user.setKeycloakId(keycloakId);
+        return userRepo.save(user);
     }
 
     @Override
@@ -91,5 +95,7 @@ public class AuthService implements AuthServiceInter {
         keycloakUserService.updateUser(user);
         return userRepo.save(user);
     }
+
+
 
 }
