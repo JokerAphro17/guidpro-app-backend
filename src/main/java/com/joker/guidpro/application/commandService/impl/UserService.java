@@ -2,6 +2,7 @@ package com.joker.guidpro.application.commandService.impl;
 
 import com.joker.guidpro.application.commandService.interfaces.UserServiceInter;
 import com.joker.guidpro.application.exceptions.AlreadyExistsException;
+import com.joker.guidpro.application.exceptions.NotFoundException;
 import com.joker.guidpro.application.outboundService.impl.KeycloakUserServiceImpl;
 import com.joker.guidpro.config.Utils;
 import com.joker.guidpro.domains.models.agregates.Admin;
@@ -92,7 +93,7 @@ public class UserService implements UserServiceInter {
     public User updateUser(UUID id, UserCmd userCmd) {
         User user = userRepository.findById(id).orElse(null);
         if (user == null) {
-           throw new IllegalArgumentException("User not found");
+           throw new NotFoundException("User not found");
         }
         User user1 = userRepository.findByEmail(userCmd.getEmail());
         if (user1 != null && !user1.getId().equals(id)) {
@@ -101,14 +102,13 @@ public class UserService implements UserServiceInter {
         modelMapper.map(userCmd, user);
         keycloakUserService.updateUser(user);
         return userRepository.save(user);
-        return null;
     }
 
     @Override
     public void updateUserStatus(UUID id, UserSatus status) {
         User user = userRepository.findById(id).orElse(null);
         if (user == null) {
-            throw new IllegalArgumentException("User not found");
+            throw new NotFoundException("User not found");
         }
         user.setStatus(status);
         if (status.equals(UserSatus.INACTIVE)) {
@@ -123,7 +123,7 @@ public class UserService implements UserServiceInter {
     public void resetUserPassword(UUID id) {
         User user = userRepository.findById(id).orElse(null);
         if (user == null) {
-            throw new IllegalArgumentException("User not found");
+            throw new NotFoundException("User not found");
         }
         String password = Utils.generateRandomString(8);
         keycloakUserService.resetUserPassword(user.getKeycloakId(), password);
