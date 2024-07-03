@@ -26,6 +26,19 @@ spring:
         jwt:
           issuer-uri:   http://localhost:8082/realms/guidpro
           jwk-set-uri:  http://localhost:8082/realms/guidpro/protocol/openid-connect/certs
+  mail:
+    host: 192.168.177.1
+    port: 1025   # 465
+    username: support@guid-pro.com
+    password: noPassW0RD
+    protocol: smtp
+    properties:
+      mail:
+        smtp:
+          auth: true
+          timeout: 10000
+          starttls:
+            enable: true
 jwt:
   auth:
       converter:

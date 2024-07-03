@@ -42,15 +42,17 @@ dependencies {
 
 	implementation 'org.modelmapper:modelmapper:3.1.1'
 
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
 
 // Annotations library by JetBrains
+
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	//layout
+	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
 
 
 // Starter for using Java Bean Validation with Spring Boot
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
-
-
-
 
 }
 
