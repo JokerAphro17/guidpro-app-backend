@@ -14,8 +14,11 @@ public class AdviceCmd {
     @NotBlank(message = "la description est obligatoire")
     private String description;
 
-
+    @NotNull(message = "le budget est obligatoire")
     private long budget;
+
+    @NotNull(message = "le domaine est obligatoire")
+    private String domainId;
 
 
 }

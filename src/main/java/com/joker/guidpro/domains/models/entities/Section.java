@@ -1,9 +1,7 @@
 package com.joker.guidpro.domains.models.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.joker.guidpro.domains.models.agregates.Advice;
+import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -21,8 +19,11 @@ public class Section {
 
     private String description;
 
+    @Column(columnDefinition = "TEXT")
     private String content;
 
+    @OneToOne
+    private Advice advice;
     private boolean isDeleted;
 
 }

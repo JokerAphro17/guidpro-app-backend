@@ -29,7 +29,7 @@ public class Advice implements Serializable {
 
     private String title;
 
-    private String content;
+    private String description;
 
     private String coverUrl;
 
@@ -47,11 +47,11 @@ public class Advice implements Serializable {
 
     // relationships
 
-    @OneToOne
+    @ManyToOne
     private Expert publisher;
 
-    @ManyToMany
-    private Set<Domain> domains;
+    @ManyToOne
+    private Domain domain;
 
     @OneToMany
     private Set<Section> sections;
@@ -65,6 +65,10 @@ public class Advice implements Serializable {
 
     private String publishedAt;
 
+    // add section
+    public void addSection(Section section) {
+        this.sections.add(section);
+    }
 
     @PrePersist
     public void prePersist() {

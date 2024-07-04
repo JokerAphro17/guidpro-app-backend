@@ -29,8 +29,8 @@ public class Domain implements Serializable {
     private String description;
 
 
-    @ManyToMany
+    @OneToMany
     Set<Advice> advices;
 
-    private boolean isDeleted;
+    private boolean isDeleted = false;
 }
