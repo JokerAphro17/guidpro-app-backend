@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
@@ -25,5 +26,23 @@ public class Section {
     @OneToOne
     private Advice advice;
     private boolean isDeleted;
+
+
+    // created_at
+    // updated_at
+
+    private String createdAt;
+    private String updatedAt;
+
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = LocalDateTime.now().toString();
+        this.updatedAt = LocalDateTime.now().toString();
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedAt = LocalDateTime.now().toString();
+    }
 
 }

@@ -53,6 +53,9 @@ public class Advice implements Serializable {
     @ManyToOne
     private Domain domain;
 
+    // published
+    private boolean isPublished = false;
+
     @OneToMany
     private Set<Section> sections;
 

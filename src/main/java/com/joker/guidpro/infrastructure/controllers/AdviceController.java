@@ -43,6 +43,11 @@ public class AdviceController {
         return ResponseEntity.ok(new ResponseDTO("Advice updated successfully", adviceService.updateAdvice(adviceId, adviceCmd), true));
     }
 
+    @GetMapping("/{adviceId}")
+    public ResponseEntity<ResponseDTO> getAdvice(@PathVariable UUID adviceId) {
+        return ResponseEntity.ok(new ResponseDTO("Advice", adviceService.getAdvice(adviceId), true));
+    }
+
     // get advice by user
     @GetMapping("/by-user")
     public ResponseEntity<ResponseDTO> getUserAdvice(Principal principal) {
@@ -60,6 +65,17 @@ public class AdviceController {
         return ResponseEntity.ok(new ResponseDTO("Section updated successfully", adviceService.updateSection(sectionId, sectionCmd), true));
     }
 
+
+    // publish advice
+    @PutMapping("/{adviceId}/publish")
+    public ResponseEntity<ResponseDTO> publishAdvice(@PathVariable UUID adviceId) {
+        return ResponseEntity.ok(new ResponseDTO("Advice published successfully", adviceService.publishAdvice(adviceId), true));
+    }
+
+    @PutMapping("/{adviceId}/unpublish")
+    public ResponseEntity<ResponseDTO> unpublishAdvice(@PathVariable UUID adviceId) {
+        return ResponseEntity.ok(new ResponseDTO("Advice unpublished successfully", adviceService.archiveAdvice(adviceId), true));
+    }
 
 
 

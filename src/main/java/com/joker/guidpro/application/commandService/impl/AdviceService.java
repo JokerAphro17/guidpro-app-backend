@@ -8,7 +8,9 @@ import com.joker.guidpro.domains.models.agregates.User;
 import com.joker.guidpro.domains.models.commandes.advice.AdviceCmd;
 import com.joker.guidpro.domains.models.commandes.advice.SectionCmd;
 import com.joker.guidpro.domains.models.entities.Section;
+import com.joker.guidpro.domains.models.valueObjects.AdviceStatus;
 import com.joker.guidpro.infrastructure.repositories.AdviceRepo;
+import com.joker.guidpro.infrastructure.repositories.DomainRepo;
 import com.joker.guidpro.infrastructure.repositories.SectionRepo;
 import com.joker.guidpro.infrastructure.repositories.UserRepository;
 import lombok.AllArgsConstructor;
@@ -16,6 +18,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,7 +29,8 @@ public class AdviceService implements AdviceServiceInter {
     private final AdviceRepo adviceRepo;
     private final ModelMapper modelMapper;
     private final UserRepository userRepo;
-    public  final SectionRepo sectionRepo;
+    private   final SectionRepo sectionRepo;
+    private final DomainRepo domainRepo;
 
 
     public Advice createAdvice(AdviceCmd adviceCmd, Principal principal) {
@@ -40,13 +44,21 @@ public class AdviceService implements AdviceServiceInter {
     // update advice
     public Advice updateAdvice(UUID adviceId, AdviceCmd adviceCmd) {
         Advice advice = adviceRepo.findById(adviceId).orElseThrow( () -> new NotFoundException("Advice not found"));
-        modelMapper.map(adviceCmd, advice);
+        advice.setTitle(adviceCmd.getTitle());
+        advice.setDescription(adviceCmd.getDescription());
+        advice.setDomain(domainRepo.findById(UUID.fromString(adviceCmd.getDomainId())).orElseThrow( () -> new NotFoundException("Domain not found")));
+
         return adviceRepo.save(advice);
     }
 
     public List<Advice> getUserAdvice(Principal principal) {
         User user = userRepo.findByKeycloakId(principal.getName());
         return adviceRepo.findAllByPublisher((Expert) user);
+    }
+
+    // show article
+    public Advice getAdvice(UUID adviceId) {
+        return adviceRepo.findById(adviceId).orElseThrow( () -> new NotFoundException("Advice not found"));
     }
 
     public Advice addSectionToAdvice(UUID adviceId, SectionCmd sectionCmd) {
@@ -63,6 +75,24 @@ public class AdviceService implements AdviceServiceInter {
         modelMapper.map(sectionCmd, section);
         return sectionRepo.save(section);
     }
+
+    // publier un article
+    public Advice publishAdvice(UUID adviceId) {
+        Advice advice = adviceRepo.findById(adviceId).orElseThrow( () -> new NotFoundException("Advice not found"));
+        advice.setStatus(AdviceStatus.PUBLISHED);
+        advice.setPublishedAt(LocalDateTime.now().toString());
+        return adviceRepo.save(advice);
+    }
+
+    // archiver un article
+    public Advice archiveAdvice(UUID adviceId) {
+        Advice advice = adviceRepo.findById(adviceId).orElseThrow( () -> new NotFoundException("Advice not found"));
+        advice.setArchivedAt(LocalDateTime.now().toString());
+        advice.setStatus(AdviceStatus.ARCHIVED);
+        return adviceRepo.save(advice);
+    }
+
+
 
 
 
