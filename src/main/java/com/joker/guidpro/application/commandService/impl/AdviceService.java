@@ -2,6 +2,7 @@ package com.joker.guidpro.application.commandService.impl;
 
 import com.joker.guidpro.application.commandService.interfaces.AdviceServiceInter;
 import com.joker.guidpro.application.exceptions.NotFoundException;
+import com.joker.guidpro.application.outboundService.impl.Seafile;
 import com.joker.guidpro.domains.models.agregates.Advice;
 import com.joker.guidpro.domains.models.agregates.Expert;
 import com.joker.guidpro.domains.models.agregates.User;
@@ -9,6 +10,7 @@ import com.joker.guidpro.domains.models.commandes.advice.AdviceCmd;
 import com.joker.guidpro.domains.models.commandes.advice.SectionCmd;
 import com.joker.guidpro.domains.models.entities.Section;
 import com.joker.guidpro.domains.models.valueObjects.AdviceStatus;
+import com.joker.guidpro.infrastructure.controllers.dto.FileDto;
 import com.joker.guidpro.infrastructure.repositories.AdviceRepo;
 import com.joker.guidpro.infrastructure.repositories.DomainRepo;
 import com.joker.guidpro.infrastructure.repositories.SectionRepo;
@@ -17,6 +19,7 @@ import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -31,6 +34,7 @@ public class AdviceService implements AdviceServiceInter {
     private final UserRepository userRepo;
     private   final SectionRepo sectionRepo;
     private final DomainRepo domainRepo;
+    private final Seafile seafile;
 
 
     public Advice createAdvice(AdviceCmd adviceCmd, Principal principal) {
@@ -92,8 +96,18 @@ public class AdviceService implements AdviceServiceInter {
         return adviceRepo.save(advice);
     }
 
+    // update cover
+    public String updateCover(UUID adviceId, FileDto fileDto) throws IOException {
+        Advice advice = adviceRepo.findById(adviceId).orElseThrow( () -> new NotFoundException("Advice not found"));
+        String coverUrl = seafile.uploadFile(fileDto.getFile());
+        advice.setCoverUrl(coverUrl);
+        adviceRepo.save(advice);
 
+        return coverUrl;
+    }
 
-
-
+    // retrieve published articles
+    public List<Advice> getPublishedAdvice() {
+        return adviceRepo.findAllByStatus(AdviceStatus.PUBLISHED);
+    }
 }

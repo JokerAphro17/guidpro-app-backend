@@ -4,11 +4,13 @@ import com.joker.guidpro.application.commandService.impl.AdviceService;
 import com.joker.guidpro.domains.models.agregates.Advice;
 import com.joker.guidpro.domains.models.commandes.advice.AdviceCmd;
 import com.joker.guidpro.domains.models.commandes.advice.SectionCmd;
+import com.joker.guidpro.infrastructure.controllers.dto.FileDto;
 import com.joker.guidpro.infrastructure.controllers.dto.ResponseDTO;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.security.Principal;
 import java.util.UUID;
 
@@ -73,10 +75,22 @@ public class AdviceController {
     }
 
     @PutMapping("/{adviceId}/unpublish")
+    @CrossOrigin(origins = "*")
     public ResponseEntity<ResponseDTO> unpublishAdvice(@PathVariable UUID adviceId) {
         return ResponseEntity.ok(new ResponseDTO("Advice unpublished successfully", adviceService.archiveAdvice(adviceId), true));
     }
 
+    // advice cover
+    @PutMapping("/{adviceId}/cover")
+    public ResponseEntity<ResponseDTO> updateCover(@PathVariable UUID adviceId, @ModelAttribute FileDto fileDto) throws IOException {
+        return ResponseEntity.ok(new ResponseDTO("Cover updated successfully", adviceService.updateCover(adviceId, fileDto), true));
+    }
+
+    // published advice
+    @GetMapping("/published")
+    public ResponseEntity<ResponseDTO> getPublishedAdvices() {
+        return ResponseEntity.ok(new ResponseDTO("Published advices", adviceService.getPublishedAdvice(), true));
+    }
 
 
 }

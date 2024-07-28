@@ -3,6 +3,7 @@ package com.joker.guidpro.infrastructure.controllers;
 import com.joker.guidpro.application.commandService.impl.UserService;
 import com.joker.guidpro.config.Utils;
 import com.joker.guidpro.domains.models.agregates.User;
+import com.joker.guidpro.domains.models.commandes.users.UpdateUserCmd;
 import com.joker.guidpro.domains.models.commandes.users.UserCmd;
 import com.joker.guidpro.domains.models.enums.UserSatus;
 import com.joker.guidpro.domains.models.validations.OnCreate;
@@ -46,7 +47,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseDTO> updateUser(@PathVariable String id, @RequestBody @Validated(OnUpdate.class) UserCmd userCmd) {
+    public ResponseEntity<ResponseDTO> updateUser(@PathVariable String id, @RequestBody @Validated UpdateUserCmd userCmd) {
         if(!Utils.isValidUUID(id)){
             return ResponseEntity.badRequest().body(new ResponseDTO("User not found", null, false));
         }

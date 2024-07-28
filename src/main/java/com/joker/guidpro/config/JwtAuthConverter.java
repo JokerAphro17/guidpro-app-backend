@@ -70,9 +70,9 @@ public class JwtAuthConverter implements Converter<Jwt, AbstractAuthenticationTo
                 .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
                 .collect(Collectors.toSet());
 
-//        for (GrantedAuthority grantedAuthority : collection) {
-//            System.out.println(grantedAuthority.getAuthority());
-//        }
+        // print roles
+        collection.forEach(System.out::println);
+
 
         return collection;
 

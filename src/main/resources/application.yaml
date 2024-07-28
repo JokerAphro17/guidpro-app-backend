@@ -46,7 +46,7 @@ jwt:
 keycloak:
   realm: guidpro
   adminClientId: backend
-  adminClientSecret: 4L9G1bvT4jI1TzGReZxkrXnfcfxxEIvl
+  adminClientSecret: 7Fz9BussSr4ajojzKIwoGS4GNBoFNtXP
   client: backend
   urls:
     auth: http://localhost:8082
