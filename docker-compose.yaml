@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  backend:
+    image: jokeru17/guid-pro-backend
+    ports:
+      - "9000:9000"
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=guid-pro
+      - DB_USER=root
+      - DB_PASS=great@PassW0RD
+      - KEYCLOAK_URI=https://keycloak.nafaan.com
+      - KEYCLOAK_ADMIN_SECRET=YdcUHJLwZMYV7y5HzxTHPsYS54zkt3t2
+    depends_on:
+        - db
+    networks:
+        - backend
+  db:
+    image: postgres:13
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=great@PassW0RD
+      - POSTGRES_DB=guid-pro
+    networks:
+      - backend
+    volumes:
+      - db-data-d:/var/lib/postgresql/data
+networks:
+    backend:
+volumes:
+    db-data-d:

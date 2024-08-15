@@ -31,12 +31,7 @@ public class WebSecurityConfig {
 
         return httpSecurity
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                "/users"
-                        ).hasRole(ADMIN)
-                        .requestMatchers(
-                                "/advices/by-user"
-                        ).hasAnyRole(NOVICE, EXPERT)
+
                         .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2

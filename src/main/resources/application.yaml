@@ -24,8 +24,8 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri:   http://localhost:8082/realms/guidpro
-          jwk-set-uri:  http://localhost:8082/realms/guidpro/protocol/openid-connect/certs
+          issuer-uri:   ${KEYCLOAK_URI:http://localhost:8082}/realms/guidpro
+          jwk-set-uri:  ${KEYCLOAK_URI:http://localhost:8082}/realms/guidpro/protocol/openid-connect/certs
   mail:
     host: 192.168.177.1
     port: 1025   # 465
@@ -46,7 +46,7 @@ jwt:
 keycloak:
   realm: guidpro
   adminClientId: backend
-  adminClientSecret: 7Fz9BussSr4ajojzKIwoGS4GNBoFNtXP
+  adminClientSecret: ${KEYCLOAK_ADMIN_SECRET:7Fz9BussSr4ajojzKIwoGS4GNBoFNtXP}
   client: backend
   urls:
-    auth: http://localhost:8082
+    auth: ${KEYCLOAK_URI:http://localhost:8082}
