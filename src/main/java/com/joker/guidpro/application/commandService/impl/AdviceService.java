@@ -107,7 +107,12 @@ public class AdviceService implements AdviceServiceInter {
     }
 
     // retrieve published articles
-    public List<Advice> getPublishedAdvice() {
-        return adviceRepo.findAllByStatus(AdviceStatus.PUBLISHED);
+    public List<Advice> getPublishedAdvice(String search) {
+
+        List<Advice> advices = adviceRepo.findAllByStatus(AdviceStatus.PUBLISHED);
+        if (search != null) {
+            advices.removeIf(advice -> !advice.getTitle().contains(search));
+        }
+        return advices;
     }
 }

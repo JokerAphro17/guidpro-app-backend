@@ -7,6 +7,7 @@ import com.joker.guidpro.domains.models.commandes.advice.SectionCmd;
 import com.joker.guidpro.infrastructure.controllers.dto.FileDto;
 import com.joker.guidpro.infrastructure.controllers.dto.ResponseDTO;
 import jakarta.validation.Valid;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -88,8 +89,8 @@ public class AdviceController {
 
     // published advice
     @GetMapping("/published")
-    public ResponseEntity<ResponseDTO> getPublishedAdvices() {
-        return ResponseEntity.ok(new ResponseDTO("Published advices", adviceService.getPublishedAdvice(), true));
+    public ResponseEntity<ResponseDTO> getPublishedAdvices(@RequestParam String search) {
+        return ResponseEntity.ok(new ResponseDTO("Published advices", adviceService.getPublishedAdvice(search), true));
     }
 
 
